@@ -1,0 +1,4 @@
+chmod +x deploy-onprem.sh
+./deploy-onprem.sh              # Deploy lần đầu
+./deploy-onprem.sh --clean      # Xóa hết deploy lại
+./deploy-onprem.sh --skip-tunnel # Bỏ qua cloudflared
