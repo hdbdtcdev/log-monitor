@@ -23,7 +23,11 @@ services:
         limits:
           memory: 1536M
     healthcheck:
-      test: ["CMD-SHELL", "curl -sk https://localhost:9200 -u admin:${OPENSEARCH_PASS:-StrongPass@123} | grep -q '\"tagline\"'"]
+      test:
+        [
+          "CMD-SHELL",
+          'curl -sk https://localhost:9200 -u admin:${OPENSEARCH_PASS:-StrongPass@123} | grep -q ''"tagline"''',
+        ]
       interval: 30s
       timeout: 10s
       retries: 10
@@ -71,10 +75,12 @@ services:
       opensearch:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:2020/api/v1/health || exit 1"]
-      interval: 15s
+      test:
+        ["CMD-SHELL", "wget -qO- http://localhost:2020/api/v1/health || exit 1"]
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
     restart: unless-stopped
 
   # ──────────────────────────────────────
