@@ -31,7 +31,7 @@ NAMESPACE="logging"
 IMAGE_NAME="log-collector"
 IMAGE_TAG="1.0.0"
 DOCKER_HUB_USER="shinichi495"
-COLLECTOR_DIR="./collector"
+COLLECTOR_DIR="."
 CF_TUNNEL_NAME="logstack-tunnel"
 DOMAIN="logstack.store"
 
@@ -55,7 +55,10 @@ done
 # ══════════════════════════════════════════════════════════════
 step "BƯỚC 1/9: Kiểm tra dependencies"
 
-for cmd in docker kubectl helm k3d cloudflared curl; do
+REQUIRED_CMDS="docker kubectl helm k3d curl"
+[[ "$SKIP_TUNNEL" == "false" ]] && REQUIRED_CMDS="$REQUIRED_CMDS cloudflared"
+
+for cmd in $REQUIRED_CMDS; do
   if ! command -v "$cmd" &>/dev/null; then
     error "$cmd chưa được cài. Chạy: brew install $cmd"
   fi
@@ -190,6 +193,40 @@ curl -s -u "admin:${OPENSEARCH_ADMIN_PASSWORD}" -k -X PUT \
   -H 'Content-Type: application/json' \
   -d '{"users": ["dev"]}' | grep -q "CREATED\|OK\|updated" && \
   success "dev → dev_role ✓" || warn "dev_role mapping có thể đã tồn tại"
+
+# ── ISM Policy: auto-delete sau 14 ngày ─────────────────
+log "Tạo ISM policy (retention 14 ngày)..."
+curl -s -u "admin:${OPENSEARCH_ADMIN_PASSWORD}" -k -X PUT \
+  https://localhost:9200/_plugins/_ism/policies/mobile-logs-retention \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "policy": {
+      "description": "Auto-delete mobile log indices after 14 days",
+      "default_state": "hot",
+      "states": [
+        {
+          "name": "hot",
+          "actions": [],
+          "transitions": [
+            {
+              "state_name": "delete",
+              "conditions": { "min_index_age": "14d" }
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "actions": [{ "delete": {} }],
+          "transitions": []
+        }
+      ],
+      "ism_template": [
+        { "index_patterns": ["mobile-logs-*"], "priority": 100 },
+        { "index_patterns": ["mobile-errors-*"], "priority": 100 }
+      ]
+    }
+  }' | grep -q "CREATED\|OK\|updated" && \
+  success "ISM policy created ✓" || warn "ISM policy có thể đã tồn tại"
 
 # Dừng port forward tạm
 kill $PF_PID 2>/dev/null || true

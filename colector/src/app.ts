@@ -1,13 +1,10 @@
+import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
-import type { Request, Response, NextFunction } from 'express';
 import { pino } from "pino";
 
 const app = express();
-app.use(express.json({ limit: '1mb' })); // batch log có thể lớn
+app.use(express.json({ limit: '1mb' }));
 
-// ─────────────────────────────────────────
-// LOGGER — collector tự log hoạt động của nó
-// ─────────────────────────────────────────
 const logger = pino({
   level: process.env.LOG_LEVEL || 'info',
   timestamp: pino.stdTimeFunctions.isoTime,
@@ -16,78 +13,128 @@ const logger = pino({
 });
 
 // ─────────────────────────────────────────
-// OPENSEARCH CLIENT
+// FLUENT BIT FORWARD
 // ─────────────────────────────────────────
-const OPENSEARCH_URL  = process.env.OPENSEARCH_URL  || 'http://opensearch-headless:9200';
-const OPENSEARCH_USER = process.env.OPENSEARCH_USER || 'admin';
-const OPENSEARCH_PASS = process.env.OPENSEARCH_PASS || 'admin';
-const INDEX_PREFIX    = 'mobile-logs';
+const FLUENT_BIT_URL = process.env.FLUENT_BIT_URL || 'http://fluent-bit:8888';
 
-async function bulkIndexToOpenSearch(logs: any[]) {
-  // Tạo bulk body — OpenSearch bulk API cần xen kẽ action + document
-  const bulkBody = logs.flatMap((log) => [
-    {
-      index: {
-        _index: `${INDEX_PREFIX}-${new Date().toISOString().slice(0, 10)}`,
-      },
-    },
-    {
-      ...log,
-      '@timestamp': log.timestamp || new Date().toISOString(),
-      // Đảm bảo luôn có source field để phân biệt với server logs
-      source: 'mobile',
-    },
-  ]);
+let totalForwarded = 0;
+let forwardErrors  = 0;
 
-  const body = bulkBody.map((line) => JSON.stringify(line)).join('\n') + '\n';
+async function forwardToFluentBit(logs: any[]): Promise<void> {
+  const payload = logs.map((log) => ({
+    ...log,
+    '@timestamp': log.timestamp || new Date().toISOString(),
+    source: 'mobile',
+    ingested_at: new Date().toISOString(),
+  }));
 
-  const response = await fetch(`${OPENSEARCH_URL}/_bulk`, {
-    method:  'POST',
-    headers: {
-      'Content-Type': 'application/x-ndjson',
-      Authorization: `Basic ${Buffer.from(`${OPENSEARCH_USER}:${OPENSEARCH_PASS}`).toString('base64')}`,
-    },
-    body,
+  const response = await fetch(FLUENT_BIT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
-    throw new Error(`OpenSearch bulk failed: ${response.status}`);
+    forwardErrors++;
+    throw new Error(`Fluent Bit forward failed: ${response.status}`);
   }
 
-  return await response.json();
+  totalForwarded += logs.length;
 }
+
+// ─────────────────────────────────────────
+// RATE LIMITER
+// ─────────────────────────────────────────
+const WINDOW_MS               = 1000;
+const MAX_REQUESTS_PER_WINDOW = Number(process.env.RATE_LIMIT) || 100;
+
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap) {
+    if (now > entry.resetAt) rateLimitMap.delete(ip);
+  }
+}, 30_000);
+
+function rateLimiter(req: Request, res: Response, next: NextFunction): void {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    next();
+    return;
+  }
+
+  entry.count++;
+  if (entry.count > MAX_REQUESTS_PER_WINDOW) {
+    logger.warn({ ip, count: entry.count }, 'rate limit exceeded');
+    res.status(429).json({
+      error: 'too_many_requests',
+      retryAfter: Math.ceil((entry.resetAt - now) / 1000),
+    });
+    return;
+  }
+
+  next();
+}
+
+app.use('/logs', rateLimiter);
 
 // ─────────────────────────────────────────
 // ROUTES
 // ─────────────────────────────────────────
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok' });
+  res.json({
+    status: 'ok',
+    uptime: process.uptime(),
+    totalForwarded,
+    forwardErrors,
+  });
 });
 
-// Endpoint nhận log batch từ mobile SDK
-app.post('/logs/mobile', async (req: Request, res: Response) => {
-  const { logs } = req.body;
+app.get('/metrics', (_req, res) => {
+  res.json({
+    totalForwarded,
+    forwardErrors,
+    rateLimitPerSec: MAX_REQUESTS_PER_WINDOW,
+    uptime: process.uptime(),
+  });
+});
 
-  // Validate
-  if (!Array.isArray(logs) || logs.length === 0) {
-    return res.status(400).json({ error: 'logs must be a non-empty array' });
+app.post('/logs/mobile', async (req: Request, res: Response) => {
+  let logs: any[];
+
+  if (req.body.logs && Array.isArray(req.body.logs)) {
+    logs = req.body.logs;
+  } else if (Array.isArray(req.body)) {
+    logs = req.body;
+  } else if (typeof req.body === 'object' && req.body !== null) {
+    logs = [req.body];
+  } else {
+    res.status(400).json({ error: 'invalid body format' });
+    return;
+  }
+
+  if (logs.length === 0) {
+    res.status(400).json({ error: 'logs must be a non-empty array' });
+    return;
   }
   if (logs.length > 500) {
-    return res.status(400).json({ error: 'max 500 logs per batch' });
+    res.status(400).json({ error: 'max 500 logs per batch' });
+    return;
   }
 
-  logger.info({ count: logs.length }, 'received mobile log batch');
-
   try {
-    await bulkIndexToOpenSearch(logs);
-
-    logger.info({ count: logs.length }, 'indexed to opensearch');
-    res.json({ ok: true, indexed: logs.length });
-
+    await forwardToFluentBit(logs);
+    logger.info({ count: logs.length }, 'forwarded to fluent-bit');
+    res.json({ ok: true, forwarded: logs.length });
   } catch (err) {
-    logger.error({ err }, 'failed to index logs');
-    res.status(500).json({ error: 'failed to store logs' });
+    logger.error({ err, count: logs.length }, 'forward to fluent-bit failed');
+    res.status(502).json({ error: 'failed to forward logs' });
   }
 });
 
@@ -102,8 +149,10 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 // ─────────────────────────────────────────
 // START
 // ─────────────────────────────────────────
-const PORT = Number(process.env.PORT) || 4008;
+const PORT = Number(process.env.PORT) || 4000;
 app.listen(PORT, () => logger.info({ port: PORT }, 'log collector started'));
 
+process.on('SIGTERM', () => { logger.info('SIGTERM received'); process.exit(0); });
+process.on('SIGINT',  () => { logger.info('SIGINT received');  process.exit(0); });
 process.on('uncaughtException',  (err) => { logger.fatal({ err }, 'uncaught exception'); process.exit(1); });
 process.on('unhandledRejection', (reason) => logger.error({ reason }, 'unhandled rejection'));

@@ -4,7 +4,7 @@ metadata:
   name: log-collector
   namespace: logging
 spec:
-  replicas: 2          # 2 replicas vì đây là điểm nhận log từ internet
+  replicas: 2 # 2 replicas vì đây là điểm nhận log từ internet
   selector:
     matchLabels:
       app: log-collector
@@ -16,37 +16,39 @@ spec:
         fluentbit.io/parser: "json"
     spec:
       containers:
-      - name: log-collector
-        image: docker.io/library/log-collector:1.0.0
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 4008
-        env:
-        - name: NODE_ENV
-          value: "production"
-        - name: SERVICE_NAME
-          value: "log-collector"
-        - name: OPENSEARCH_URL
-          value: "http://opensearch-cluster-master.logging.svc.cluster.local:9200"
-        - name: OPENSEARCH_USER
-          value: "log-collector-user"    # user riêng, không dùng admin
-        - name: OPENSEARCH_PASS
-          valueFrom:
-            secretKeyRef:
-              name: opensearch-secret
-              key: log-collector-password
-        resources:
-          requests:
-            cpu:    "100m"
-            memory: "128Mi"
-          limits:
-            cpu:    "500m"
-            memory: "256Mi"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 4008
-          periodSeconds: 15
+        - name: log-collector
+          image: docker.io/library/log-collector:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4008
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: NODE_TLS_REJECT_UNAUTHORIZED
+              value: "0" # OpenSearch dùng self-signed cert
+            - name: SERVICE_NAME
+              value: "log-collector"
+            - name: OPENSEARCH_URL
+              value: "https://opensearch-cluster-master.logging.svc.cluster.local:9200"
+            - name: OPENSEARCH_USER
+              value: "admin"
+            - name: OPENSEARCH_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-secret
+                  key: log-collector-password
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4008
+            periodSeconds: 15
 ---
 apiVersion: v1
 kind: Service
@@ -57,8 +59,8 @@ spec:
   selector:
     app: log-collector
   ports:
-  - port: 80
-    targetPort: 4008
+    - port: 80
+      targetPort: 4008
 ---
 # Expose ra ngoài để mobile app gửi log vào
 apiVersion: networking.k8s.io/v1
@@ -73,13 +75,13 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: log-collector.yourdomain.com
-    http:
-      paths:
-      - path: /logs
-        pathType: Prefix
-        backend:
-          service:
-            name: log-collector
-            port:
-              number: 80
+    - host: log-collector.yourdomain.com
+      http:
+        paths:
+          - path: /logs
+            pathType: Prefix
+            backend:
+              service:
+                name: log-collector
+                port:
+                  number: 80

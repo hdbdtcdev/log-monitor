@@ -1,0 +1,16 @@
+services:
+  fluent-bit:
+    image: fluent/fluent-bit:3.0
+    container_name: fluent-bit-local
+    ports:
+      - "8888:8888"   # HTTP input — gửi log vào đây
+      - "2020:2020"   # Metrics / health check
+    volumes:
+      - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf:ro
+      - ./fluent-bit/add_timestamp.lua:/fluent-bit/etc/add_timestamp.lua:ro
+      - ./fluent-bit/parse_kv.lua:/fluent-bit/etc/parse_kv.lua:ro
+      - ./test-logs:/logs:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
