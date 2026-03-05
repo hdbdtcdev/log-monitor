@@ -1,45 +1,45 @@
-2026-03-02T08:00:01.123+07:00 [INFO] [AppLifecycle] app_state=foreground session_id=sess_a1b2c3 user_id=u_10001 device_id=dev_iphone15pro_001
-2026-03-02T08:00:01.456+07:00 [INFO] [Navigation] screen=SplashScreen action=mounted session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:00:02.789+07:00 [DEBUG] [Auth] checking_token=true token_expiry=2026-03-02T20:00:00Z session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:00:03.012+07:00 [INFO] [Navigation] screen=HomeScreen action=mounted session_id=sess_a1b2c3 user_id=u_10001 load_time_ms=1523
-2026-03-02T08:00:05.234+07:00 [INFO] [API] method=GET url=/api/v1/accounts status=200 duration_ms=432 session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:00:05.567+07:00 [INFO] [API] method=GET url=/api/v1/notifications status=200 duration_ms=287 session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:00:08.890+07:00 [WARN] [API] method=GET url=/api/v1/promotions status=429 duration_ms=156 error="rate_limit_exceeded" retry_after=30 session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:00:12.345+07:00 [INFO] [Navigation] screen=TransferScreen action=mounted session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:00:15.678+07:00 [INFO] [API] method=POST url=/api/v1/transfer/validate status=200 duration_ms=890 session_id=sess_a1b2c3 user_id=u_10001 transaction_id=txn_f1e2d3
-2026-03-02T08:00:18.901+07:00 [INFO] [Navigation] screen=OTPScreen action=mounted session_id=sess_a1b2c3 user_id=u_10001 otp_type=transfer
-2026-03-02T08:00:25.234+07:00 [WARN] [OTP] verification_failed=true attempt=1 otp_type=transfer session_id=sess_a1b2c3 user_id=u_10001 transaction_id=txn_f1e2d3
-2026-03-02T08:00:35.567+07:00 [WARN] [OTP] verification_failed=true attempt=2 otp_type=transfer session_id=sess_a1b2c3 user_id=u_10001 transaction_id=txn_f1e2d3
-2026-03-02T08:00:45.890+07:00 [ERROR] [OTP] verification_blocked=true attempt=3 otp_type=transfer reason="max_attempts_exceeded" session_id=sess_a1b2c3 user_id=u_10001 transaction_id=txn_f1e2d3
-2026-03-02T08:01:00.123+07:00 [ERROR] [API] method=POST url=/api/v1/transfer/confirm status=500 duration_ms=2345 error="internal_server_error" response_body="{\"code\":\"TRF_500\",\"message\":\"Transaction processing failed\"}" session_id=sess_a1b2c3 user_id=u_10001 transaction_id=txn_f1e2d3
-2026-03-02T08:01:00.456+07:00 [ERROR] [JSError] name=TypeError message="Cannot read property 'balance' of undefined" stack="TypeError: Cannot read property 'balance' of undefined\n    at TransferScreen.handleConfirm (TransferScreen.tsx:142)\n    at callCallback (ReactNativeRenderer.js:189)\n    at commitHookEffectListMount (ReactFiber.js:1024)\n    at invokePassiveEffects (ReactFiber.js:3501)" screen=TransferScreen session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:01:05.789+07:00 [INFO] [Navigation] screen=HomeScreen action=mounted session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:01:10.012+07:00 [INFO] [API] method=GET url=/api/v1/accounts status=200 duration_ms=345 session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:02:00.345+07:00 [ERROR] [API] method=GET url=/api/v1/transaction-history status=0 duration_ms=30000 error="network_timeout" session_id=sess_a1b2c3 user_id=u_10001 network_type=4G signal_strength=-95
-2026-03-02T08:02:00.678+07:00 [WARN] [Network] connectivity_changed=true from=online to=offline session_id=sess_a1b2c3 user_id=u_10001 network_type=4G
-2026-03-02T08:02:30.901+07:00 [INFO] [Network] connectivity_changed=true from=offline to=online session_id=sess_a1b2c3 user_id=u_10001 network_type=wifi
-2026-03-02T08:03:00.123+07:00 [INFO] [API] method=GET url=/api/v1/accounts status=200 duration_ms=189 session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:05:00.456+07:00 [INFO] [Navigation] screen=SettingsScreen action=mounted session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:05:05.789+07:00 [INFO] [Biometric] action=authenticate result=success method=face_id session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:05:10.012+07:00 [INFO] [API] method=PUT url=/api/v1/user/settings status=200 duration_ms=567 session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:10:00.345+07:00 [INFO] [Navigation] screen=QRPayScreen action=mounted session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:10:02.678+07:00 [WARN] [Permission] camera_permission=denied session_id=sess_a1b2c3 user_id=u_10001 platform=ios os_version=17.2
-2026-03-02T08:10:05.901+07:00 [INFO] [Navigation] screen=HomeScreen action=mounted session_id=sess_a1b2c3 user_id=u_10001
-2026-03-02T08:15:00.123+07:00 [FATAL] [Crash] name=RangeError message="Maximum call stack size exceeded" stack="RangeError: Maximum call stack size exceeded\n    at deepClone (utils/clone.ts:15)\n    at deepClone (utils/clone.ts:15)\n    at deepClone (utils/clone.ts:15)\n    at deepClone (utils/clone.ts:15)\n    at AccountList.render (AccountList.tsx:89)\n    at finishClassComponent (ReactFiber.js:2034)" screen=HomeScreen session_id=sess_a1b2c3 user_id=u_10001 platform=ios os_version=17.2 device_model=iPhone15Pro app_version=3.5.1
-2026-03-02T08:15:00.456+07:00 [INFO] [AppLifecycle] app_state=crash_restart session_id=sess_a1b2c4 user_id=u_10001 device_id=dev_iphone15pro_001 previous_session=sess_a1b2c3 crash_reason=RangeError
-2026-03-02T08:15:01.789+07:00 [INFO] [CrashReport] uploaded=true crash_id=crash_x1y2z3 session_id=sess_a1b2c4 user_id=u_10001 previous_session=sess_a1b2c3
-2026-03-02T08:20:00.012+07:00 [INFO] [AppLifecycle] app_state=background session_id=sess_a1b2c4 user_id=u_10001 device_id=dev_iphone15pro_001 active_duration_ms=300000
-2026-03-02T08:20:00.345+07:00 [DEBUG] [Push] notification_received=true type=promotion push_id=push_abc123 session_id=sess_a1b2c4 user_id=u_10001 app_state=background
-2026-03-02T08:25:00.678+07:00 [INFO] [AppLifecycle] app_state=foreground session_id=sess_a1b2c4 user_id=u_10001 device_id=dev_iphone15pro_001 background_duration_ms=300000
-2026-03-02T08:25:01.901+07:00 [INFO] [DeepLink] url=hdbank://transfer?to=0901234567&amount=500000 handled=true session_id=sess_a1b2c4 user_id=u_10001
-2026-03-02T08:25:02.234+07:00 [INFO] [Navigation] screen=TransferScreen action=mounted session_id=sess_a1b2c4 user_id=u_10001 source=deeplink
-2026-03-02T08:25:05.567+07:00 [ERROR] [Security] event=jailbreak_detected session_id=sess_a1b2c4 user_id=u_10001 platform=ios device_id=dev_iphone15pro_001
-2026-03-02T08:25:05.890+07:00 [ERROR] [Security] event=ssl_pinning_failed host=api.hdbank.com.vn session_id=sess_a1b2c4 user_id=u_10001 expected_pin="sha256/abc123" received_pin="sha256/xyz789"
-2026-03-02T08:30:00.123+07:00 [INFO] [Performance] screen=HomeScreen render_time_ms=245 fps=58 memory_mb=187 cpu_percent=12 session_id=sess_a1b2c4 user_id=u_10001
-2026-03-02T08:30:00.456+07:00 [WARN] [Performance] screen=TransferScreen render_time_ms=890 fps=24 memory_mb=312 cpu_percent=45 session_id=sess_a1b2c4 user_id=u_10001 warning="high_memory_usage"
-2026-03-02T08:30:00.789+07:00 [ERROR] [Performance] screen=AccountList memory_mb=512 cpu_percent=89 session_id=sess_a1b2c4 user_id=u_10001 warning="memory_pressure" action=cleared_cache freed_mb=128
-2026-03-02T08:35:00.012+07:00 [INFO] [Auth] action=logout reason=user_initiated session_id=sess_a1b2c4 user_id=u_10001 session_duration_ms=1800000
-2026-03-02T08:35:00.345+07:00 [INFO] [AppLifecycle] app_state=background session_id=sess_a1b2c4 user_id=u_10001 device_id=dev_iphone15pro_001 active_duration_ms=600000
-2026-03-02T08:12:01.000+07:00 [ERROR] [API] method=POST url=/api/v1/payment status=503 duration_ms=5432 error="service_unavailable" session_id=sess_test001 user_id=u_test01 transaction_id=txn_test001
-2026-03-02T08:12:01.000+07:00 [FATAL] [Crash] name=OutOfMemoryError message="Java heap space exhausted" stack="OutOfMemoryError: Java heap space\n    at BitmapFactory.decodeStream (BitmapFactory.java:882)\n    at ImageLoader.load (ImageLoader.tsx:45)" screen=GalleryScreen session_id=sess_test001 user_id=u_test01 platform=android os_version=14 device_model=SamsungS24 app_version=3.5.2
-2026-03-02T08:12:01.000+07:00 [WARN] [Security] event=root_detected session_id=sess_test001 user_id=u_test01 platform=android device_id=dev_samsung_test
+2026-03-05T09:00:01.123+07:00 [INFO] [AppLifecycle] app_state=foreground session_id=sess_d4e5f6 user_id=u_20045 device_id=dev_samsung_s24_007
+2026-03-05T09:00:01.456+07:00 [INFO] [Navigation] screen=SplashScreen action=mounted session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:00:02.101+07:00 [DEBUG] [Auth] checking_token=true token_expiry=2026-03-05T21:00:00Z session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:00:03.334+07:00 [INFO] [Navigation] screen=HomeScreen action=mounted session_id=sess_d4e5f6 user_id=u_20045 load_time_ms=1876
+2026-03-05T09:00:04.567+07:00 [INFO] [API] method=GET url=/api/v2/accounts status=200 duration_ms=312 session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:00:05.012+07:00 [INFO] [API] method=GET url=/api/v2/notifications status=200 duration_ms=198 session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:00:06.234+07:00 [INFO] [API] method=GET url=/api/v2/exchange-rates status=200 duration_ms=145 session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:00:10.890+07:00 [INFO] [Navigation] screen=SavingsScreen action=mounted session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:00:12.345+07:00 [INFO] [API] method=GET url=/api/v2/savings/products status=200 duration_ms=567 session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:00:18.678+07:00 [INFO] [API] method=POST url=/api/v2/savings/open status=201 duration_ms=1234 session_id=sess_d4e5f6 user_id=u_20045 product_id=sav_flex_12m amount=50000000
+2026-03-05T09:00:20.901+07:00 [INFO] [Navigation] screen=OTPScreen action=mounted session_id=sess_d4e5f6 user_id=u_20045 otp_type=savings
+2026-03-05T09:00:28.234+07:00 [INFO] [OTP] verification_success=true attempt=1 otp_type=savings session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:00:29.567+07:00 [INFO] [Navigation] screen=SavingsSuccessScreen action=mounted session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:01:00.123+07:00 [INFO] [Navigation] screen=BillPayScreen action=mounted session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:01:05.456+07:00 [WARN] [API] method=POST url=/api/v2/bill/lookup status=408 duration_ms=15000 error="request_timeout" provider=EVN session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:01:06.789+07:00 [WARN] [API] method=POST url=/api/v2/bill/lookup status=408 duration_ms=15000 error="request_timeout" provider=EVN retry=2 session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:01:08.012+07:00 [ERROR] [API] method=POST url=/api/v2/bill/lookup status=502 duration_ms=3456 error="bad_gateway" provider=EVN retry=3 session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:02:00.345+07:00 [INFO] [Navigation] screen=CardManageScreen action=mounted session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:02:03.678+07:00 [INFO] [API] method=GET url=/api/v2/cards status=200 duration_ms=278 session_id=sess_d4e5f6 user_id=u_20045 card_count=3
+2026-03-05T09:02:10.901+07:00 [INFO] [API] method=POST url=/api/v2/cards/lock status=200 duration_ms=890 session_id=sess_d4e5f6 user_id=u_20045 card_id=card_visa_001 action=temporary_lock
+2026-03-05T09:03:00.123+07:00 [ERROR] [API] method=GET url=/api/v2/loan/status status=0 duration_ms=30000 error="network_timeout" session_id=sess_d4e5f6 user_id=u_20045 network_type=wifi signal_strength=-78
+2026-03-05T09:03:00.456+07:00 [WARN] [Network] connectivity_changed=true from=online to=unstable session_id=sess_d4e5f6 user_id=u_20045 network_type=wifi rssi=-78
+2026-03-05T09:03:15.789+07:00 [INFO] [Network] connectivity_changed=true from=unstable to=online session_id=sess_d4e5f6 user_id=u_20045 network_type=4G
+2026-03-05T09:04:00.012+07:00 [INFO] [Navigation] screen=TransferScreen action=mounted session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:04:05.345+07:00 [INFO] [API] method=POST url=/api/v2/transfer/napas status=200 duration_ms=2345 session_id=sess_d4e5f6 user_id=u_20045 transaction_id=txn_g7h8i9 bank=VCB amount=15000000
+2026-03-05T09:04:08.678+07:00 [INFO] [OTP] verification_success=true attempt=1 otp_type=transfer session_id=sess_d4e5f6 user_id=u_20045 transaction_id=txn_g7h8i9
+2026-03-05T09:04:09.901+07:00 [INFO] [API] method=POST url=/api/v2/transfer/confirm status=200 duration_ms=1567 session_id=sess_d4e5f6 user_id=u_20045 transaction_id=txn_g7h8i9
+2026-03-05T09:05:00.234+07:00 [ERROR] [JSError] name=TypeError message="Cannot read properties of null (reading 'accountName')" stack="TypeError: Cannot read properties of null\n    at BeneficiaryList.renderItem (BeneficiaryList.tsx:67)\n    at FlatList.renderCell (VirtualizedList.js:1892)\n    at CellRenderer.render (VirtualizedList.js:2034)" screen=TransferScreen session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:06:00.567+07:00 [INFO] [Navigation] screen=QRPayScreen action=mounted session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:06:02.890+07:00 [INFO] [Permission] camera_permission=granted session_id=sess_d4e5f6 user_id=u_20045 platform=android os_version=14
+2026-03-05T09:06:05.123+07:00 [INFO] [QRPay] qr_scanned=true merchant=CircleK amount=89000 session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:06:08.456+07:00 [INFO] [API] method=POST url=/api/v2/qr/pay status=200 duration_ms=1890 session_id=sess_d4e5f6 user_id=u_20045 transaction_id=txn_j0k1l2 merchant=CircleK
+2026-03-05T09:07:00.789+07:00 [INFO] [Biometric] action=authenticate result=success method=fingerprint session_id=sess_d4e5f6 user_id=u_20045
+2026-03-05T09:08:00.012+07:00 [WARN] [Performance] screen=TransactionHistory render_time_ms=1245 fps=18 memory_mb=345 cpu_percent=52 session_id=sess_d4e5f6 user_id=u_20045 warning="slow_render"
+2026-03-05T09:08:00.345+07:00 [ERROR] [Performance] screen=TransactionHistory memory_mb=487 cpu_percent=78 session_id=sess_d4e5f6 user_id=u_20045 warning="high_memory" action=cleared_image_cache freed_mb=95
+2026-03-05T09:09:00.678+07:00 [WARN] [Security] event=screenshot_detected screen=AccountDetail session_id=sess_d4e5f6 user_id=u_20045 platform=android
+2026-03-05T09:09:01.901+07:00 [ERROR] [Security] event=ssl_pinning_failed host=api.hdbank.com.vn session_id=sess_d4e5f6 user_id=u_20045 expected_pin="sha256/def456" received_pin="sha256/unknown999"
+2026-03-05T09:10:00.123+07:00 [FATAL] [Crash] name=NullPointerException message="Attempt to invoke virtual method on a null object reference" stack="NullPointerException\n    at PaymentConfirm.processResult (PaymentConfirm.tsx:98)\n    at AsyncCallback.onSuccess (AsyncCallback.java:45)\n    at ThreadPool.run (ThreadPool.java:112)" screen=PaymentConfirmScreen session_id=sess_d4e5f6 user_id=u_20045 platform=android os_version=14 device_model=SamsungS24 app_version=3.6.0
+2026-03-05T09:10:00.456+07:00 [INFO] [AppLifecycle] app_state=crash_restart session_id=sess_d4e5f7 user_id=u_20045 device_id=dev_samsung_s24_007 previous_session=sess_d4e5f6 crash_reason=NullPointerException
+2026-03-05T09:10:01.789+07:00 [INFO] [CrashReport] uploaded=true crash_id=crash_m3n4o5 session_id=sess_d4e5f7 user_id=u_20045 previous_session=sess_d4e5f6
+2026-03-05T09:12:00.012+07:00 [INFO] [Navigation] screen=HomeScreen action=mounted session_id=sess_d4e5f7 user_id=u_20045 load_time_ms=2103
+2026-03-05T09:12:05.345+07:00 [INFO] [DeepLink] url=hdbank://promo/tet2026?code=TETXUAN handled=true session_id=sess_d4e5f7 user_id=u_20045
+2026-03-05T09:15:00.678+07:00 [INFO] [Performance] screen=HomeScreen render_time_ms=198 fps=60 memory_mb=156 cpu_percent=8 session_id=sess_d4e5f7 user_id=u_20045
+2026-03-05T09:20:00.901+07:00 [INFO] [Auth] action=logout reason=session_expired session_id=sess_d4e5f7 user_id=u_20045 session_duration_ms=1200000
+2026-03-05T09:20:01.234+07:00 [INFO] [AppLifecycle] app_state=background session_id=sess_d4e5f7 user_id=u_20045 device_id=dev_samsung_s24_007 active_duration_ms=1200000

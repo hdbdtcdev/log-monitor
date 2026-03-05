@@ -23,7 +23,8 @@ services:
         limits:
           memory: 768M
     healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:9200 | grep -q '\"tagline\"'"]
+      test:
+        ["CMD-SHELL", 'curl -s http://localhost:9200 | grep -q ''"tagline"''']
       interval: 30s
       timeout: 10s
       retries: 10
@@ -44,7 +45,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 384M
+          memory: 512M
     depends_on:
       opensearch:
         condition: service_healthy
@@ -63,7 +64,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 128M
+          memory: 64M
     depends_on:
       opensearch:
         condition: service_healthy
@@ -86,7 +87,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
+          memory: 128M
     depends_on:
       - fluent-bit
     healthcheck:
@@ -106,7 +107,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 128M
+          memory: 64M
     depends_on:
       - log-collector
       - dashboards
