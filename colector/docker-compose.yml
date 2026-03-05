@@ -8,7 +8,8 @@ services:
     environment:
       - discovery.type=single-node
       - OPENSEARCH_JAVA_OPTS=-Xms256m -Xmx256m
-      - plugins.security.disabled=true
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=Admin@12345!
+      - DISABLE_SECURITY_PLUGIN=true
       - bootstrap.memory_lock=true
     ulimits:
       memlock: { soft: -1, hard: -1 }
