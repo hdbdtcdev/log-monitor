@@ -55,8 +55,6 @@ services:
   fluent-bit:
     image: fluent/fluent-bit:3.0
     container_name: fluent-bit
-    environment:
-      - OPENSEARCH_PASS=${OPENSEARCH_PASS:-StrongPass@123}
     volumes:
       - ./fluent-bit/fluent-bit-vps.conf:/fluent-bit/etc/fluent-bit.conf:ro
       - ./fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf:ro
