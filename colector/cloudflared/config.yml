@@ -1,0 +1,9 @@
+tunnel: e593e1ea-24c1-41b0-957a-5ad19ea93a85
+credentials-file: /etc/cloudflared/cert.pem
+
+ingress:
+  - hostname: api.logstack.store
+    service: http://log-collector:4000
+  - hostname: dashboard.logstack.store
+    service: http://opensearch-dashboards:5601
+  - service: http_status:404
