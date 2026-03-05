@@ -102,10 +102,7 @@ services:
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
-    command: tunnel --config /etc/cloudflared/config.yml run
-    volumes:
-      - ./cloudflared/config.yml:/etc/cloudflared/config.yml:ro
-      - ./cloudflared/cert.pem:/etc/cloudflared/cert.pem:ro
+    command: tunnel run --token ${CLOUDFLARE_TUNNEL_TOKEN}
     deploy:
       resources:
         limits:
