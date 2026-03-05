@@ -8,8 +8,7 @@ services:
     environment:
       - discovery.type=single-node
       - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_PASS:-StrongPass@123}
-      - plugins.security.disabled=false
+      - plugins.security.disabled=true
       - bootstrap.memory_lock=true
     ulimits:
       memlock: { soft: -1, hard: -1 }
@@ -23,11 +22,7 @@ services:
         limits:
           memory: 1536M
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'curl -sk https://localhost:9200 -u admin:${OPENSEARCH_PASS:-StrongPass@123} | grep -q ''"tagline"''',
-        ]
+      test: ["CMD-SHELL", "curl -s http://localhost:9200 | grep -q '\"tagline\"'"]
       interval: 30s
       timeout: 10s
       retries: 10
@@ -125,8 +120,8 @@ services:
         limits:
           memory: 128M
     depends_on:
-      log-collector:
-        condition: service_healthy
+      - log-collector
+      - dashboards
     restart: unless-stopped
 
   # ──────────────────────────────────────
