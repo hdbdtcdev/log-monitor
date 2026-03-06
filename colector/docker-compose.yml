@@ -42,6 +42,7 @@ services:
       - OPENSEARCH_HOSTS=["https://opensearch:9200"]
       - OPENSEARCH_USERNAME=admin
       - OPENSEARCH_PASSWORD=${OPENSEARCH_PASS:-Admin@12345!}
+      - OPENSEARCH_SSL_VERIFICATIONMODE=none
       - DISABLE_SECURITY_DASHBOARDS_PLUGIN=false
     ports:
       - "5601:5601"
