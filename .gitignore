@@ -1,1 +1,4 @@
 colector/node_modules
+colector/cloudflared/cert.pem
+colector/.env
+*.pem
